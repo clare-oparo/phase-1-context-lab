@@ -1,5 +1,43 @@
 /* Your Code Here */
+let createEmployeeRecord = function(recordDetail){
+    return {
+        firstName: recordDetail[0],
+        familyName: recordDetail[1],
+        title: recordDetail[2],
+        payPerHour: recordDetail[3],
+        timeInEvents: [],
+        timeOutEvents: []
+    }
+}
 
+let createEmployeeRecords = function(employeeRowData) {
+    return employeeRowData.map(function(recordDetail){
+        return createEmployeeRecord(recordDetail)
+    })
+}
+
+let createTimeInEvent = function(dateStamp){
+    let [date, hour] = dateStamp.split(' ')
+
+    this.timeInEvents.push({
+        type: "TimeIn",
+        hour: parseInt(hour, 10),
+        date,
+    })
+
+    return this
+}
+
+let createTimeOutEvent = function(dateStamp){
+    let [date, hour] = dateStamp.split(' ')
+
+    this.timeOutEvents.push({
+        type: "TimeOut",
+        hour: parseInt(hour, 10),
+        date,
+    })
+    return this
+}
 /*
  We're giving you this function. Take a look at it, you might see some usage
  that's new and different. That's because we're avoiding a well-known, but
@@ -9,6 +47,23 @@
  for you to use if you need it!
  */
 
+ let hoursWorkedOnDate = function(exactDate){
+    let inEvent = this.timeInEvents.find(function(e){
+        return e.date === exactDate
+    })
+
+    let outEvent = this.timeOutEvents.find(function(e){
+        return e.date === exactDate
+    })
+
+    return (outEvent.hour - inEvent.hour) / 100
+}
+
+let wagesEarnedOnDate = function(dateChosen){
+    let grossWage = hoursWorkedOnDate.call(this, dateChosen)
+        * this.payPerHour
+    return parseFloat(grossWage.toString())
+}
 const allWagesFor = function () {
     const eligibleDates = this.timeInEvents.map(function (e) {
         return e.date
@@ -20,4 +75,16 @@ const allWagesFor = function () {
 
     return payable
 }
+
+let findEmployeeByFirstName = function(orgArray, firstName) {
+    return orgArray.find(function(deets){
+      return deets.firstName === firstName
+    })
+  }
+  
+  let calculatePayroll = function(arrayOfEmployeeRecords){
+      return arrayOfEmployeeRecords.reduce(function(memo, deets){
+          return memo + allWagesFor.call(deets)
+      }, 0)
+  }
 
